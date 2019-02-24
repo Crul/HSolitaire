@@ -42,10 +42,10 @@ showSuitDecks (sD, hD, cD, dD) = top ++ bottom
     showSDPair ds = sep ++ (map (\s -> s ++ "    ") $ CC.concatLines $ map showVisTopCard ds)
 
 showColumnDecks :: ColumnDecks -> [String]
-showColumnDecks (cD1,cD2,cD3,cD4,cD5,cD6,cD7) = shownColDs''
+showColumnDecks (cD0,cD1,cD2,cD3,cD4,cD5,cD6) = shownColDs''
   where
     titles       = concat $ map (\i -> " " ++ (show i) ++ "   ") [(0::Int)..6]
-    shownColDs   = map showColumnDeck [cD1,cD2,cD3,cD4,cD5,cD6,cD7]
+    shownColDs   = map showColumnDeck [cD0,cD1,cD2,cD3,cD4,cD5,cD6]
     shownColDs'' = (CC.columnLayout $ map (\c -> (colDeckWitdth, c)) shownColDs) ++ ["", titles]
 
 -----------------------------------------------------------------------------------------------

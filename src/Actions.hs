@@ -6,7 +6,7 @@ import qualified Data.Vector as V
 import qualified Crosscutting as CC
 import Decks      (setSuitDeck, suitDeck, nextCard, moveMaxCards)
 import State      (State(..), addMessage, stColumnDeck, setStColumnDeck, setStColumnDecks, setLoop)
-import ActionsFns (revealCard, colDeckToColDeck, cardFromDeckToSuitDeck)
+import ActionsFns (revealCard, deckToColDeck, cardToSuitDeck)
 
 takeCards :: Int
 takeCards = 3
@@ -15,10 +15,10 @@ err :: State -> String -> State
 err = addMessage
 
 wrongCol :: Int -> Bool
-wrongCol c = not $ c `elem` [1..7] -- TODO 3 DRY
+wrongCol c = not $ c `elem` [0..6] -- TODO 3 DRY
     
 wrongSuit :: Int -> Bool
-wrongSuit s = not $ s `elem` [1..4]
+wrongSuit s = not $ s `elem` [0..3]
 
 
 action :: State -> String -> State
@@ -58,7 +58,7 @@ loopToSuitDeck' stt = CC.chainMaybe {-if-} cardsMoved {-then-} setDecks
   where
     (hLD, vLD) = loopDecks stt
 
-    cardsMoved = cardFromDeckToSuitDeck (suitDecks stt) (nextCard vLD)
+    cardsMoved = cardToSuitDeck (suitDecks stt) (nextCard vLD)
 
     setDecks (vLD',sDs') = stt { loopDecks = (hLD,vLD')
                                , suitDecks = sDs'
@@ -66,7 +66,7 @@ loopToSuitDeck' stt = CC.chainMaybe {-if-} cardsMoved {-then-} setDecks
 
 
 colToSuitDeck :: State -> Int -> State
-colToSuitDeck stt col | wrongCol col = err stt "Wrong column, use from 1 to 7"  -- TODO 3 DRY
+colToSuitDeck stt col | wrongCol col = err stt "Wrong column, use from 0 to 6"  -- TODO 3 DRY
                       | otherwise    = CC.maybeOr (colToSuitDeck' stt col)
                                                   (err stt $ "No positionable card in column " ++ (show col))
 
@@ -75,7 +75,7 @@ colToSuitDeck' stt col = CC.chainMaybe {-if-} decksMoved {-then-} setDecks
   where
     (hCol,vCol) = stColumnDeck stt col
 
-    decksMoved  = cardFromDeckToSuitDeck (suitDecks stt) (nextCard vCol)
+    decksMoved  = cardToSuitDeck (suitDecks stt) (nextCard vCol)
 
     setDecks (vCol',stDs') = setStColumnDeck stt' col colD
                 where stt' = stt { suitDecks = stDs' }
@@ -87,13 +87,14 @@ loopToColumn stt toC = CC.handleMaybe {-if-} decksMoved
                                       {-then-} setDecks
                                       {-else-} (err stt $ "No moves are possible from Main Deck to Column " ++ (show toC))
   where
-    loopDs     = loopDecks stt
-    toColDeck  = stColumnDeck stt toC
+    (hLD, vLD)  = loopDecks stt
+    fakeColDeck = (V.empty, V.take 1 vLD)
+    toColDeck   = stColumnDeck stt toC
 
-    decksMoved = colDeckToColDeck loopDs toColDeck
+    decksMoved  = deckToColDeck fakeColDeck toColDeck
 
-    setDecks (loopDs', toColDeck') = setStColumnDeck stt' toC toColDeck'
-                        where stt' = stt { loopDecks=loopDs' }
+    setDecks (_, toColDeck') = setStColumnDeck stt' toC toColDeck'
+                  where stt' = stt { loopDecks=(hLD, V.drop 1 vLD) }
 
 
 colToCol :: State -> Int -> Int -> State
@@ -106,15 +107,15 @@ colToCol stt frC toC = if frC == toC
     frCD       = stColumnDeck stt frC
     toCD       = stColumnDeck stt toC
 
-    decksMoved = colDeckToColDeck frCD toCD
+    decksMoved = deckToColDeck frCD toCD
 
     setDecks (frCD', toCD') = setStColumnDecks stt changes
               where changes = [(frC,frCD'),(toC,toCD')]
 
 
 suitDeckToColumn :: State -> Int -> Int -> State
-suitDeckToColumn stt st toC | wrongCol toC = err stt "Wrong column, use from 1 to 7"  -- TODO 3 DRY
-                            | wrongSuit st = err stt "Wrong Suit Deck, use from 1 to 4"
+suitDeckToColumn stt st toC | wrongCol toC = err stt "Wrong column, use from 0 to 6"  -- TODO 3 DRY
+                            | wrongSuit st = err stt "Wrong Suit Deck, use from 0 to 3"
                             | otherwise    = CC.handleMaybe {-if-} decksMoved
                                                             {-then-} setDecks
                                                             {-else-} (err stt $ "Cannot move positioned card to column " ++ (show toC))
@@ -122,7 +123,7 @@ suitDeckToColumn stt st toC | wrongCol toC = err stt "Wrong column, use from 1 t
     fromCD     = (V.empty, suitDeck (suitDecks stt) st)
     toCD       = stColumnDeck stt toC
 
-    decksMoved = colDeckToColDeck fromCD toCD
+    decksMoved = deckToColDeck fromCD toCD
 
     setDecks ((_,suitD), toCD') = setStColumnDeck stt' toC toCD'
                      where stt' = stt { suitDecks = setSuitDeck (suitDecks stt) st suitD }

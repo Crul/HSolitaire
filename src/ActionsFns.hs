@@ -1,7 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module ActionsFns ( revealCard
-                  , colDeckToColDeck
-                  , cardFromDeckToSuitDeck) where
+module ActionsFns (revealCard, deckToColDeck, cardToSuitDeck) where
 
 import Control.Monad
 import qualified Data.Vector as V
@@ -25,8 +23,8 @@ revealCard (hid,vis) | V.null vis = CC.maybeOr (moveCard hid vis) {-or-} (hid, v
 
 ----------------------------------------------------------------------------------------------------
 
-colDeckToColDeck :: ColumnDeck -> ColumnDeck -> Maybe (ColumnDeck, ColumnDeck)
-colDeckToColDeck frCD@(_,vFrD) toCD@(_,vToD) = colDecks'
+deckToColDeck :: ColumnDeck -> ColumnDeck -> Maybe (ColumnDeck, ColumnDeck)
+deckToColDeck frCD@(_,vFrD) toCD@(_,vToD) = colDecks'
   where
     colDecks  = CC.handleMaybe {-if-} (nextCard vToD)
                                {-then-} (deckOverDeckCard frCD toCD)
@@ -81,24 +79,24 @@ stackable (Card stCrdLbl stCrdSt) (Card ovCrdLbl ovCrdSt) =
 
 ----------------------------------------------------------------------------------------------------
 
-cardFromDeckToSuitDeck :: SuitDecks -> Maybe NextCardResult -> Maybe (Deck, SuitDecks)
-cardFromDeckToSuitDeck stDecks mbCrdRes = CC.continueMaybe {-if-} mbCrdRes
-                                                        {-then-} (cardFromDeckToSuitDeck' stDecks)
+cardToSuitDeck :: SuitDecks -> Maybe NextCardResult -> Maybe (Deck, SuitDecks)
+cardToSuitDeck stDecks mbCrdRes = CC.continueMaybe {-if-} mbCrdRes
+                                                   {-then-} (cardToSuitDeck' stDecks)
 
-cardFromDeckToSuitDeck' :: SuitDecks -> NextCardResult -> Maybe (Deck, SuitDecks)
-cardFromDeckToSuitDeck' sDs crdRes@(crd,_) = cardToSuitDeck crdRes suitDec (setSuitDeck sDs sDIdx)
+cardToSuitDeck' :: SuitDecks -> NextCardResult -> Maybe (Deck, SuitDecks)
+cardToSuitDeck' sDs crdRes@(crd,_) = cardToSuitDeck'' crdRes suitDec (setSuitDeck sDs sDIdx)
   where sDIdx   = suitDeckIdx crd 
         suitDec = suitDeck sDs sDIdx
 
 
-cardToSuitDeck :: NextCardResult -> Deck -> (Deck -> SuitDecks) -> Maybe (Deck, SuitDecks)
-cardToSuitDeck (card, frDck) stDck getSuitDecks = movedDecks
+cardToSuitDeck'' :: NextCardResult -> Deck -> (Deck -> SuitDecks) -> Maybe (Deck, SuitDecks)
+cardToSuitDeck'' (card, frDck) stDck getSuitDecks = movedDecks
   where 
-    movedDecks = CC.chainMaybe {-if-} (cardToSuitDeck' card stDck)
+    movedDecks = CC.chainMaybe {-if-} (cardToSuitDeck''' card stDck)
                                {-then-} (\stDck' -> (frDck, getSuitDecks stDck'))
 
-cardToSuitDeck' :: Card -> Deck -> Maybe Deck
-cardToSuitDeck' crd@(Card lb _) deck = case nextCard deck of
+cardToSuitDeck''' :: Card -> Deck -> Maybe Deck
+cardToSuitDeck''' crd@(Card lb _) deck = case nextCard deck of
     Nothing                 -> setAce
     Just ((Card King _), _) -> Nothing
     Just ((Card lb'  _), _) -> setIf $ succLabel lb'

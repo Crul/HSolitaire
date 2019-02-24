@@ -53,12 +53,12 @@ suitDeck (_,_,_,sD) 3 = sD
 suitDeck _          _ = V.empty  -- TODO 5 ??
 
 setSuitDeck :: SuitDecks -> Int -> Deck -> SuitDecks
-setSuitDeck (sD1,sD2,sD3,sD4) n sD = case n of
-    1 -> (sD,sD2,sD3,sD4)
-    2 -> (sD1,sD,sD3,sD4)
-    3 -> (sD1,sD2,sD,sD4)
-    4 -> (sD1,sD2,sD3,sD)
-    _ -> (sD1,sD2,sD3,sD4)
+setSuitDeck (sD0,sD1,sD2,sD3) n sD = case n of
+    0 -> (sD,sD1,sD2,sD3)
+    1 -> (sD0,sD,sD2,sD3)
+    2 -> (sD0,sD1,sD,sD3)
+    3 -> (sD0,sD1,sD2,sD)
+    _ -> (sD0,sD1,sD2,sD3)
 
 
 columnDeck :: ColumnDecks -> Int -> ColumnDeck
@@ -72,15 +72,15 @@ columnDeck (_,_,_,_,_,_,cD) 6 = cD
 columnDeck _                _ = (V.empty, V.empty)  -- TODO 5 ??
 
 setColumnDeck :: ColumnDecks -> Int -> ColumnDeck -> ColumnDecks
-setColumnDeck (cD1,cD2,cD3,cD4,cD5,cD6,cD7) n cD = case n of
-    0 -> (cD,cD2,cD3,cD4,cD5,cD6,cD7)
-    1 -> (cD1,cD,cD3,cD4,cD5,cD6,cD7)
-    2 -> (cD1,cD2,cD,cD4,cD5,cD6,cD7)
-    3 -> (cD1,cD2,cD3,cD,cD5,cD6,cD7)
-    4 -> (cD1,cD2,cD3,cD4,cD,cD6,cD7)
-    5 -> (cD1,cD2,cD3,cD4,cD5,cD,cD7)
-    6 -> (cD1,cD2,cD3,cD4,cD5,cD6,cD)
-    _ -> (cD1,cD2,cD3,cD4,cD5,cD6,cD7)
+setColumnDeck (cD0,cD1,cD2,cD3,cD4,cD5,cD6) n cD = case n of
+    0 -> (cD,cD1,cD2,cD3,cD4,cD5,cD6)
+    1 -> (cD0,cD,cD2,cD3,cD4,cD5,cD6)
+    2 -> (cD0,cD1,cD,cD3,cD4,cD5,cD6)
+    3 -> (cD0,cD1,cD2,cD,cD4,cD5,cD6)
+    4 -> (cD0,cD1,cD2,cD3,cD,cD5,cD6)
+    5 -> (cD0,cD1,cD2,cD3,cD4,cD,cD6)
+    6 -> (cD0,cD1,cD2,cD3,cD4,cD5,cD)
+    _ -> (cD0,cD1,cD2,cD3,cD4,cD5,cD6)
 
 
 allCards :: Deck
