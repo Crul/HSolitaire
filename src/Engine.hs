@@ -18,8 +18,8 @@ play stt | win stt = showSt (addMessage stt "You won!")
   
 play stt | autoSolving stt = autoSolve
   where
-    cleanStt  = stt { messages=[] }  -- TODO DRY
-    autoSolve = play $ solve cleanStt -- TODO <DRY> + <2 move previous to avoid undo nothing when no actions>
+    cleanStt  = stt { messages=[] }  -- TODO ? DRY
+    autoSolve = play $ solve cleanStt -- TODO ? DRY -- TODO 2 move previous to avoid undo nothing when no actions>
 
 play stt | otherwise = showSt stt
                      >> getLine

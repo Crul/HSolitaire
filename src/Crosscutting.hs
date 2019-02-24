@@ -24,12 +24,12 @@ concatLines' xs ys = zipWith (++) xs ys
 
 runIntParam :: Char -> (Int -> a) -> a -> a
 runIntParam a fn err = case mbInt a of
-                           (Just x)  -> fn (succ x)  -- TODO 1 succ
-                           _        -> err
+                           (Just x)  -> fn x
+                           _         -> err
 
 runIntParam2 :: Char -> Char -> (Int -> Int -> a) -> a -> a
 runIntParam2 a b fn err = case (mbInt a, mbInt b) of
-                             (Just x, Just y) -> fn (succ x) (succ y) -- TODO 2 succ
+                             (Just x, Just y) -> fn x y
                              _                -> err
 
 mbInt :: Char -> Maybe Int

@@ -85,7 +85,7 @@ colToSuitDeck' stt col = CC.chainMaybe {-if-} decksMoved {-then-} setDecks
 loopToColumn :: State -> Int -> State
 loopToColumn stt toC = CC.handleMaybe {-if-} decksMoved
                                       {-then-} setDecks
-                                      {-else-} (err stt "TODO cannot move")
+                                      {-else-} (err stt $ "No moves are possible from Main Deck to Column " ++ (show toC))
   where
     loopDs     = loopDecks stt
     toColDeck  = stColumnDeck stt toC
@@ -97,19 +97,19 @@ loopToColumn stt toC = CC.handleMaybe {-if-} decksMoved
 
 
 colToCol :: State -> Int -> Int -> State
-colToCol stt fromC toC = if fromC == toC
-                            then err stt "TODO cannot move"  -- TODO 2 make XX to try to move to suit deck adn/or king to empty column deck
-                            else CC.handleMaybe {-if-} decksMoved
-                                                {-then-} setDecks
-                                                {-else-} (err stt "TODO cannot move")
+colToCol stt frC toC = if frC == toC
+                         then err stt "Cannot move to the same column"  -- TODO 2 make XX to try to move to suit deck adn/or king to empty column deck
+                         else CC.handleMaybe {-if-} decksMoved
+                                             {-then-} setDecks
+                                             {-else-} (err stt $ "Cannot move from column " ++ (show frC) ++ " to column " ++ (show toC))
   where
-    frCD       = stColumnDeck stt fromC
+    frCD       = stColumnDeck stt frC
     toCD       = stColumnDeck stt toC
 
     decksMoved = colDeckToColDeck frCD toCD
 
     setDecks (frCD', toCD') = setStColumnDecks stt changes
-              where changes = [(fromC,frCD'),(toC,toCD')]
+              where changes = [(frC,frCD'),(toC,toCD')]
 
 
 suitDeckToColumn :: State -> Int -> Int -> State
@@ -117,7 +117,7 @@ suitDeckToColumn stt st toC | wrongCol toC = err stt "Wrong column, use from 1 t
                             | wrongSuit st = err stt "Wrong Suit Deck, use from 1 to 4"
                             | otherwise    = CC.handleMaybe {-if-} decksMoved
                                                             {-then-} setDecks
-                                                            {-else-} (err stt "TODO cannot move")
+                                                            {-else-} (err stt $ "Cannot move positioned card to column " ++ (show toC))
   where
     fromCD     = (V.empty, suitDeck (suitDecks stt) st)
     toCD       = stColumnDeck stt toC

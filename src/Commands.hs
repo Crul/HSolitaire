@@ -16,22 +16,22 @@ executeCmd reset play stt act =
         "help"  -> help
         "h"     -> help
         "?"     -> help
-        "-"     -> undo  -- TODO multiple "-" should undo multiple times
+        "-"     -> undo  -- TODO 3 multiple "-" should undo multiple times
         "u"     -> undo
         "undo"  -> undo
         "*"     -> autoSolve
-        "+"     -> autoSolve  -- TODO autoSolve single step
+        "+"     -> autoSolve  -- TODO 3 autoSolve single step
         _       -> execAct
     where
       exit      = putStrLn "Goodbye"
       undo      = play $ (previousOrCurrent stt) { autoSolving = False }
-      help      = putStrLn "HELP TODO 3"
+      help      = putStrLn "HELP -- TODO 3 "
       autoSolve = play $ stt { autoSolving = True }
 
       cleanStt  = stt { messages=[] }
       execAct   = play nextState
         where
           actedState = action cleanStt act
-          nextState  = setPrev actedState      -- TODO 2 move previous to avoid undo nothing when no actions
+          nextState  = setPrev actedState      -- TODO 1 move previous to avoid undo nothing when no actions
       
       setPrev s = s { previous = Just stt }

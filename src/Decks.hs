@@ -5,6 +5,7 @@ module Decks ( Deck
              , SuitDecks
              , ColumnDeck
              , ColumnDecks
+             , nColumnDecks
              , NextCardResult
              , suitDeckIdx
              , suitDeck
@@ -32,6 +33,9 @@ type SuitDecks   = (Deck, Deck, Deck, Deck)  -- Spade, Heart, Club, Diamond
 type ColumnDeck  = (Deck, Deck)              -- Hidden, Visible
 type ColumnDecks = (ColumnDeck, ColumnDeck, ColumnDeck, ColumnDeck, ColumnDeck, ColumnDeck, ColumnDeck)
 
+nColumnDecks :: Int
+nColumnDecks = 7
+
 type NextCardResult = (Card, Deck)
 
 
@@ -42,10 +46,10 @@ suitDeckIdx (Card _ Club    ) = 2
 suitDeckIdx (Card _ Diamond ) = 3
 
 suitDeck :: SuitDecks -> Int -> Deck
-suitDeck (sD,_,_,_) 1 = sD
-suitDeck (_,sD,_,_) 2 = sD
-suitDeck (_,_,sD,_) 3 = sD
-suitDeck (_,_,_,sD) 4 = sD
+suitDeck (sD,_,_,_) 0 = sD
+suitDeck (_,sD,_,_) 1 = sD
+suitDeck (_,_,sD,_) 2 = sD
+suitDeck (_,_,_,sD) 3 = sD
 suitDeck _          _ = V.empty  -- TODO 5 ??
 
 setSuitDeck :: SuitDecks -> Int -> Deck -> SuitDecks
@@ -58,24 +62,24 @@ setSuitDeck (sD1,sD2,sD3,sD4) n sD = case n of
 
 
 columnDeck :: ColumnDecks -> Int -> ColumnDeck
-columnDeck (cD,_,_,_,_,_,_) 1 = cD
-columnDeck (_,cD,_,_,_,_,_) 2 = cD
-columnDeck (_,_,cD,_,_,_,_) 3 = cD
-columnDeck (_,_,_,cD,_,_,_) 4 = cD
-columnDeck (_,_,_,_,cD,_,_) 5 = cD
-columnDeck (_,_,_,_,_,cD,_) 6 = cD
-columnDeck (_,_,_,_,_,_,cD) 7 = cD
+columnDeck (cD,_,_,_,_,_,_) 0 = cD
+columnDeck (_,cD,_,_,_,_,_) 1 = cD
+columnDeck (_,_,cD,_,_,_,_) 2 = cD
+columnDeck (_,_,_,cD,_,_,_) 3 = cD
+columnDeck (_,_,_,_,cD,_,_) 4 = cD
+columnDeck (_,_,_,_,_,cD,_) 5 = cD
+columnDeck (_,_,_,_,_,_,cD) 6 = cD
 columnDeck _                _ = (V.empty, V.empty)  -- TODO 5 ??
 
 setColumnDeck :: ColumnDecks -> Int -> ColumnDeck -> ColumnDecks
 setColumnDeck (cD1,cD2,cD3,cD4,cD5,cD6,cD7) n cD = case n of
-    1 -> (cD,cD2,cD3,cD4,cD5,cD6,cD7)
-    2 -> (cD1,cD,cD3,cD4,cD5,cD6,cD7)
-    3 -> (cD1,cD2,cD,cD4,cD5,cD6,cD7)
-    4 -> (cD1,cD2,cD3,cD,cD5,cD6,cD7)
-    5 -> (cD1,cD2,cD3,cD4,cD,cD6,cD7)
-    6 -> (cD1,cD2,cD3,cD4,cD5,cD,cD7)
-    7 -> (cD1,cD2,cD3,cD4,cD5,cD6,cD)
+    0 -> (cD,cD2,cD3,cD4,cD5,cD6,cD7)
+    1 -> (cD1,cD,cD3,cD4,cD5,cD6,cD7)
+    2 -> (cD1,cD2,cD,cD4,cD5,cD6,cD7)
+    3 -> (cD1,cD2,cD3,cD,cD5,cD6,cD7)
+    4 -> (cD1,cD2,cD3,cD4,cD,cD6,cD7)
+    5 -> (cD1,cD2,cD3,cD4,cD5,cD,cD7)
+    6 -> (cD1,cD2,cD3,cD4,cD5,cD6,cD)
     _ -> (cD1,cD2,cD3,cD4,cD5,cD6,cD7)
 
 

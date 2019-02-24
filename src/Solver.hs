@@ -2,6 +2,7 @@
 module Solver (solve) where
 
 import qualified Crosscutting as CC
+import Decks   (nColumnDecks)
 import State   (State(..))
 import Actions (loopToSuitDeck', colToSuitDeck')
 
@@ -12,10 +13,10 @@ solve stt = setAutoSolving (CC.maybeOr solved' unsolvable)
 
     solved     = CC.maybeOrMaybe tryLoopToSuit tryColumnsToSuit
     solved'    = CC.chainMaybe solved setPrev
-    setPrev s  = s { previous = Just stt } -- TODO DRY
+    setPrev s  = s { previous = Just stt } -- TODO 2 DRY
 
     tryLoopToSuit    = loopToSuitDeck' stt
-    tryColumnsToSuit = tryColumnToSuit (Just stt) 8
+    tryColumnsToSuit = tryColumnToSuit (Just stt) (succ nColumnDecks)
 
     setAutoSolving s = s { autoSolving = CC.isJust solved }
 

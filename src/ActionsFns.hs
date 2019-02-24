@@ -77,7 +77,7 @@ stackableSubDeck' movable frDeck overCard = CC.maybeIf (not $ V.null frDeck) con
 stackable :: Card -> Card -> Bool
 stackable (Card King _)            _                      = False
 stackable (Card stCrdLbl stCrdSt) (Card ovCrdLbl ovCrdSt) =
-  (succLabel stCrdLbl == ovCrdLbl) && (suitColor stCrdSt) /= (suitColor ovCrdSt)  -- TODO sameColor stCrdSt ovCrdSt
+  (succLabel stCrdLbl == ovCrdLbl) && (suitColor stCrdSt) /= (suitColor ovCrdSt)  -- TODO 3 sameColor stCrdSt ovCrdSt
 
 ----------------------------------------------------------------------------------------------------
 
