@@ -33,7 +33,7 @@ suitColor Diamond = 1
 
 -- TODO 2 move to UX
 suitColorCmd :: Suit -> String
-suitColorCmd st | suitColor st == 1 = ";30m"
+suitColorCmd st | suitColor st == 0 = ";30m"
                 | otherwise         = ";31m"
 
 instance Show Suit where
@@ -50,7 +50,7 @@ data Label = Two   | Three | Four  | Five  | Six   | Seven
            | Eight | Nine  | Ten   | Jack  | Queen | King  | Ace
              deriving (Eq, Ord, Enum)
 
-succLabel :: Label -> Label  -- TODO 2 deriving Ord ?
+succLabel :: Label -> Label  -- TODO 2 deriving Ord/... ?
 succLabel Ace   = Two
 succLabel Two   = Three
 succLabel Three = Four

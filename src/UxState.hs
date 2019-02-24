@@ -4,13 +4,18 @@ module UxState (showState) where
 import Data.List (intercalate)
 
 import qualified Crosscutting as CC
-import Decks   (LoopDecks, SuitDecks, ColumnDecks)
+import State   (State(..))
 import UxDecks (showLoopDecks, showSuitDecks, showColumnDecks)
 
-showState :: LoopDecks -> SuitDecks -> ColumnDecks -> [String] -> String
-showState loopDs suitDs colsDs messgs = output
+showState :: State -> String
+showState stt = output
     where
-      output = cls ++ mainSc ++ "\n" ++ msgs
+      output = cls ++ mainSc ++ "\n" ++ msgs ++ "\n"
+
+      loopDs = loopDecks stt
+      suitDs = suitDecks stt
+      colsDs = columnDecks stt
+      messgs = messages stt
 
       cls    = "\ESC[2J"
       mainSc = intercalate "\n" (CC.columnLayout [(14, left), (3, []), (0, right)])

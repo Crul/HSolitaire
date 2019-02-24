@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module InitialBoard where
+module InitialBoard (initialBoard) where
 
 import qualified Data.Vector as V
 
@@ -19,6 +19,7 @@ initialBoard deck = State { loopDecks   = lpDecks
                                           )
                           , messages    = msgs
                           , previous    = Nothing
+                          , autoSolving = False
                           }
   where
     lpDecks = (lpDeck, V.empty)

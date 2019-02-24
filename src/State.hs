@@ -1,23 +1,28 @@
 {-# OPTIONS_GHC -Wall #-}
-module State where
+module State ( State(..)
+             , addMessage
+             , setLoop
+             , win
+             , previousOrCurrent
+             , stColumnDeck
+             , setStColumnDeck
+             , setStColumnDecks
+             ) where
 
 import qualified Data.Vector as V
 
 import qualified Crosscutting as CC
 import Decks   (Deck, LoopDecks, SuitDecks, ColumnDeck, ColumnDecks, columnDeck, setColumnDeck)
-import UxState (showState)  -- TODO 2 Invert Dependency
 
 data State = State { loopDecks   :: LoopDecks
                    , suitDecks   :: SuitDecks
                    , columnDecks :: ColumnDecks
                    , messages    :: [String]
                    , previous    :: Maybe State
+                   , autoSolving :: Bool
 -- TODO 4 time     , startTime   :: ???
 -- TODO 4 time     , pausesSwts  :: [???]
                    }
-
-instance Show State where
-  show stt = showState (loopDecks stt) (suitDecks stt) (columnDecks stt) (messages stt)
 
 addMessage :: State -> String -> State
 addMessage st msg = st { messages = (messages st) ++ [msg]}

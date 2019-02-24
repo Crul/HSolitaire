@@ -5,23 +5,32 @@ module Engine (run) where
 import Control.Monad.Random
 
 import Decks        (newDeck)
-import State        (State, addMessage, win)
+import State        (State(..), addMessage, win)
 import InitialBoard (initialBoard)
 import Commands     (executeCmd)
+import UxState      (showState)
+import Solver       (solve)
 
 play :: State -> IO ()
-play stt = if (win stt) then won else  play'
+play stt | win stt = showSt (addMessage stt "You won!")
+                     >> getLine
+                     >> run  -- TODO 5 win animation
+  
+play stt | autoSolving stt = autoSolve
   where
-    play' = print stt
-          >> getLine
-          >>= executeCmd run play stt
+    cleanStt  = stt { messages=[] }  -- TODO DRY
+    autoSolve = play $ solve cleanStt -- TODO <DRY> + <2 move previous to avoid undo nothing when no actions>
 
-    won   = print (addMessage stt "You won!")
-          >> getLine
-          >> run  -- TODO 5 win animation
+play stt | otherwise = showSt stt
+                     >> getLine
+                     >>= executeCmd run play stt
 
 
 run :: IO ()
 run = do
   deck <- evalRandIO newDeck
   play $ initialBoard deck
+
+
+showSt :: State -> IO ()
+showSt = putStr . showState

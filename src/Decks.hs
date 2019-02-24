@@ -102,7 +102,7 @@ nextCard deck = CC.maybeIfVal {-if-} (not $ V.null deck)
 
 
 moveCard :: Deck -> Deck -> Maybe (Deck, Deck)
-moveCard fr to = CC.chainMaybe (nextCard fr) movedDecks
+moveCard fr to = CC.chainMaybe {-if-} (nextCard fr) {-then-} movedDecks
   where movedDecks (crd, fr') = (fr', V.cons crd to)
 
 

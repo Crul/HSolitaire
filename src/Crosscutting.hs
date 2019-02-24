@@ -35,6 +35,10 @@ runIntParam2 a b fn err = case (mbInt a, mbInt b) of
 mbInt :: Char -> Maybe Int
 mbInt = readMaybe . (:[])
 
+isJust :: Maybe a -> Bool
+isJust (Just _) = True
+isJust Nothing  = False
+
 handleMaybe :: Maybe a -> (a -> b) -> b -> b
 handleMaybe Nothing  _  err = err
 handleMaybe (Just a) fn _   = fn a
@@ -59,9 +63,9 @@ maybeOr :: Maybe a -> a -> a
 maybeOr (Just a)  _ = a
 maybeOr Nothing   b = b
 
+maybeOrMaybe :: Maybe a -> Maybe a -> Maybe a
+maybeOrMaybe Nothing mb = mb
+maybeOrMaybe ma      _  = ma
+
 maybeIfVal :: Bool -> a -> Maybe a
 maybeIfVal cond a = maybeIf cond (Just a)
-
--- maybeTuple :: (Maybe a, Maybe a) -> Maybe (a, a)
--- maybeTuple (Just a, Just b) = Just (a, b)
--- maybeTuple _                = Nothing

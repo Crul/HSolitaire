@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module Actions (action) where
+module Actions (action, loopToSuitDeck', colToSuitDeck') where
 
 import qualified Data.Vector as V
 
@@ -51,9 +51,10 @@ takeLoop stt = CC.handleMaybe {-if-} cardsTaken
 
 
 loopToSuitDeck :: State -> State
-loopToSuitDeck stt = CC.handleMaybe {-if-} cardsMoved
-                                    {-then-} setDecks
-                                    {-else-} (err stt "No positionable card in deck")
+loopToSuitDeck stt = CC.maybeOr (loopToSuitDeck' stt) (err stt "No positionable card in deck")
+
+loopToSuitDeck' :: State -> Maybe State
+loopToSuitDeck' stt = CC.chainMaybe {-if-} cardsMoved {-then-} setDecks
   where
     (hLD, vLD) = loopDecks stt
 
@@ -66,9 +67,11 @@ loopToSuitDeck stt = CC.handleMaybe {-if-} cardsMoved
 
 colToSuitDeck :: State -> Int -> State
 colToSuitDeck stt col | wrongCol col = err stt "Wrong column, use from 1 to 7"  -- TODO 3 DRY
-                      | otherwise    = CC.handleMaybe {-if-} decksMoved
-                                                      {-then-} setDecks
-                                                      {-else-} (err stt $ "No positionable card in column " ++ (show col))
+                      | otherwise    = CC.maybeOr (colToSuitDeck' stt col)
+                                                  (err stt $ "No positionable card in column " ++ (show col))
+
+colToSuitDeck' :: State -> Int -> Maybe State
+colToSuitDeck' stt col = CC.chainMaybe {-if-} decksMoved {-then-} setDecks
   where
     (hCol,vCol) = stColumnDeck stt col
 
