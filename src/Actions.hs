@@ -32,7 +32,7 @@ action stt act = case act of
     [s,'/',c] -> CC.runIntParam2 s c (suitDeckToColumn stt) wrongMsg -- TODO ? change 1/4 --> s/4
     _         -> wrongMsg
 
-  where wrongMsg = err stt "Sorry, I don't get it"
+  where wrongMsg = err stt "Sorry, I don't get it, type h for help"
 
 
 takeLoop :: State -> State
