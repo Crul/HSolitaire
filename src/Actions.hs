@@ -25,11 +25,11 @@ action :: State -> String -> State
 action stt act = case act of
     ""        -> takeLoop stt
     "."       -> loopToSuitDeck stt
---  ".."      -> loopKingToEmptyColDeck stt TODO 2
+--  ".."      -> loopKingToEmptyColDeck stt TODO 4
     [c]       -> CC.runIntParam c (colToSuitDeck stt) wrongMsg
     ['.',c]   -> CC.runIntParam c (loopToColumn stt) wrongMsg
     [a,b]     -> CC.runIntParam2 a b (colToCol stt) wrongMsg
-    [s,'/',c] -> CC.runIntParam2 s c (suitDeckToColumn stt) wrongMsg -- TODO ? change 1/4 --> s/4
+    [s,'/',c] -> CC.runIntParam2 s c (suitDeckToColumn stt) wrongMsg -- TODO 4 add [s|h|c|d]/[0..6]
     _         -> wrongMsg
 
   where wrongMsg = err stt "Sorry, I don't get it, type h for help"
@@ -99,7 +99,7 @@ loopToColumn stt toC = CC.handleMaybe {-if-} decksMoved
 
 colToCol :: State -> Int -> Int -> State
 colToCol stt frC toC = if frC == toC
-                         then err stt "Cannot move to the same column"  -- TODO 2 make XX to try to move to suit deck adn/or king to empty column deck
+                         then err stt "Cannot move to the same column"  -- TODO 4 make XX to try to move to suit deck adn/or king to empty column deck
                          else CC.handleMaybe {-if-} decksMoved
                                              {-then-} setDecks
                                              {-else-} (err stt $ "Cannot move from column " ++ (show frC) ++ " to column " ++ (show toC))

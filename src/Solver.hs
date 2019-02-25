@@ -13,7 +13,7 @@ solve stt = setAutoSolving (CC.maybeOr solved' unsolvable)
 
     solved     = CC.maybeOrMaybe tryLoopToSuit tryColumnsToSuit
     solved'    = CC.chainMaybe solved setPrev
-    setPrev s  = s { previous = Just stt } -- TODO 2 DRY
+    setPrev s  = s { previous = Just stt } -- TODO 3 DRY
 
     tryLoopToSuit    = loopToSuitDeck' stt
     tryColumnsToSuit = tryColumnToSuit (Just stt) (succ nColumnDecks)

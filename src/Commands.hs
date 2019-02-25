@@ -18,11 +18,11 @@ executeCmd reset play stt act =
         "help"  -> showHelp
         "h"     -> showHelp
         "?"     -> showHelp
-        "-"     -> undo  -- TODO 3 multiple "-" should undo multiple times
+        "-"     -> undo  -- TODO 4 multiple "-" should undo multiple times
         "u"     -> undo
         "undo"  -> undo
         "*"     -> autoSolve
-        "+"     -> autoSolve  -- TODO 3 autoSolve single step
+        "+"     -> autoSolve  -- TODO 4 autoSolve single step
         _       -> execAct
     where
       exit      = putStrLn "Goodbye"
@@ -42,7 +42,7 @@ executeCmd reset play stt act =
 
 help :: String
 help = intercalate "\n" [
-    "HSolitaire Help"
+    "HSolitaire Help"  -- TODO 2 Add recommended fonts (also README)
   , "---------------"
   , ""
   , "Controls:      "

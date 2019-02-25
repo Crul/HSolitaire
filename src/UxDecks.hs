@@ -31,22 +31,24 @@ emptyRows :: [String]
 emptyRows = take (length showCardRows) $ repeat ""
 
 showLoopDecks :: LoopDecks -> [String]
-showLoopDecks (hLD,vLD) = CC.concatLines [showBackDeck hLD, showVisLoop vLD]
+showLoopDecks (hLD,vLD) = ["Main Deck     "] ++ CC.concatLines [showBackDeck hLD, showVisLoop vLD]
 
 showSuitDecks :: SuitDecks -> [String]
-showSuitDecks (sD, hD, cD, dD) = top ++ bottom
+showSuitDecks (sD, hD, cD, dD) = sep ++ titlesTop ++ top ++ sep ++ bottom ++ titlesBottom
   where
+    titlesTop     = [" F0   F1      "]
     top           = showSDPair [sD,hD]
-    bottom        = showSDPair [cD,dD]
     sep           = [take 14 $ repeat ' ']
-    showSDPair ds = sep ++ (map (\s -> s ++ "    ") $ CC.concatLines $ map showVisTopCard ds)
+    bottom        = showSDPair [cD,dD]
+    titlesBottom  = [" F2   F3      "]
+    showSDPair ds = (map (\s -> s ++ "    ") $ CC.concatLines $ map showVisTopCard ds)
 
 showColumnDecks :: ColumnDecks -> [String]
 showColumnDecks (cD0,cD1,cD2,cD3,cD4,cD5,cD6) = shownColDs''
   where
-    titles       = concat $ map (\i -> " " ++ (show i) ++ "   ") [(0::Int)..6]
+    titles       = concat $ map (\i -> " C" ++ (show i) ++ "  ") [(0::Int)..6]
     shownColDs   = map showColumnDeck [cD0,cD1,cD2,cD3,cD4,cD5,cD6]
-    shownColDs'' = (CC.columnLayout $ map (\c -> (colDeckWitdth, c)) shownColDs) ++ ["", titles]
+    shownColDs'' = [titles] ++ (CC.columnLayout $ map (\c -> (colDeckWitdth, c)) shownColDs)
 
 -----------------------------------------------------------------------------------------------
 

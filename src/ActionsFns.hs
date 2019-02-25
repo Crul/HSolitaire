@@ -66,7 +66,7 @@ stackableSubDeck' :: Deck -> Deck -> Card -> Maybe (Deck, Deck)
 stackableSubDeck' movable frDeck overCard = CC.maybeIf (not $ V.null frDeck) continue
   where
     Just (card, frDeck') = nextCard frDeck
-    movable'             = movable V.++ (V.fromList [card])  -- TODO 3 V.++ (V.fromList ... ?
+    movable'             = movable V.++ (V.fromList [card])
     continue = if stackable card overCard
                   then Just (frDeck', movable')
                   else stackableSubDeck' movable' frDeck' overCard

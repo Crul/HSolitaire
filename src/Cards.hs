@@ -25,7 +25,7 @@ instance Show Card where  -- TODO 2 move to UX
 data Suit  = Spade | Heart | Club | Diamond
              deriving (Eq)
 
-suitColor :: Suit -> Int  -- TODO ? export sameColor :: Suit -> Suit -> Boolean
+suitColor :: Suit -> Int  -- TODO 3 export sameColor :: Suit -> Suit -> Boolean
 suitColor Spade   = 0
 suitColor Heart   = 1
 suitColor Club    = 0

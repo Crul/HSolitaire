@@ -50,7 +50,7 @@ suitDeck (sD,_,_,_) 0 = sD
 suitDeck (_,sD,_,_) 1 = sD
 suitDeck (_,_,sD,_) 2 = sD
 suitDeck (_,_,_,sD) 3 = sD
-suitDeck _          _ = V.empty  -- TODO 5 ??
+suitDeck _          _ = V.empty
 
 setSuitDeck :: SuitDecks -> Int -> Deck -> SuitDecks
 setSuitDeck (sD0,sD1,sD2,sD3) n sD = case n of
@@ -69,7 +69,7 @@ columnDeck (_,_,_,cD,_,_,_) 3 = cD
 columnDeck (_,_,_,_,cD,_,_) 4 = cD
 columnDeck (_,_,_,_,_,cD,_) 5 = cD
 columnDeck (_,_,_,_,_,_,cD) 6 = cD
-columnDeck _                _ = (V.empty, V.empty)  -- TODO 5 ??
+columnDeck _                _ = (V.empty, V.empty)
 
 setColumnDeck :: ColumnDecks -> Int -> ColumnDeck -> ColumnDecks
 setColumnDeck (cD0,cD1,cD2,cD3,cD4,cD5,cD6) n cD = case n of
