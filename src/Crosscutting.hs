@@ -1,26 +1,28 @@
 {-# OPTIONS_GHC -Wall #-}
 module Crosscutting where
 
+import Data.Text (Text, append, pack)
+
 import Text.Read
 
-columnLayout :: [(Int, [String])]  -> [String]
+columnLayout :: [(Int, [Text])]  -> [Text]
 columnLayout sections = layout
   where
     maxHeight   = maximum $ map (\(_,lns) -> length lns) sections
     eqHeightScs = map (fillBlanks maxHeight) sections
     layout      = concatLines eqHeightScs
 
-fillBlanks :: Int -> (Int, [String]) -> [String]
-fillBlanks height (w, lns) = lns ++ blanks
+fillBlanks :: Int -> (Int, [Text]) -> [Text]
+fillBlanks height (w, lns) = lns ++ (map pack blanks)
   where
     blanks = take (height - (length lns)) $ repeat blank
     blank  = take w $ repeat ' '
 
-concatLines :: [[String]]  -> [String]
-concatLines lnArr = foldr concatLines' (repeat "") lnArr
+concatLines :: [[Text]]  -> [Text]
+concatLines lnArr = foldr concatLines' (repeat $ pack "") lnArr
 
-concatLines' :: [String] -> [String] -> [String]
-concatLines' xs ys = zipWith (++) xs ys
+concatLines' :: [Text] -> [Text] -> [Text]
+concatLines' xs ys = zipWith append xs ys
 
 runIntParam :: Char -> (Int -> a) -> a -> a
 runIntParam a fn err = case mbInt a of

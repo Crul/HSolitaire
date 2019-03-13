@@ -4,6 +4,7 @@ module UxDecks ( showLoopDecks
                , showColumnDecks
                ) where
 
+import Data.Text (Text)
 import qualified Data.Vector as V
 
 import qualified Crosscutting as CC
@@ -27,32 +28,32 @@ import UxCards ( showCardRows
 colDeckWitdth :: Int
 colDeckWitdth = 5
 
-emptyRows :: [String]
-emptyRows = take (length showCardRows) $ repeat ""
+emptyRows :: [Text]
+emptyRows = take (length showCardRows) $ repeat $ pack ""
 
-showLoopDecks :: LoopDecks -> [String]
-showLoopDecks (hLD,vLD) = ["Main Deck     "] ++ CC.concatLines [showBackDeck hLD, showVisLoop vLD]
+showLoopDecks :: LoopDecks -> [Text]
+showLoopDecks (hLD,vLD) = [pack "Main Deck     "] ++ CC.concatLines [showBackDeck hLD, showVisLoop vLD]
 
-showSuitDecks :: SuitDecks -> [String]
+showSuitDecks :: SuitDecks -> [Text]
 showSuitDecks (sD, hD, cD, dD) = sep ++ titlesTop ++ top ++ sep ++ bottom ++ titlesBottom
   where
-    titlesTop     = [" F0   F1      "]
+    titlesTop     = [pack " F0   F1      "]
     top           = showSDPair [sD,hD]
-    sep           = [take 14 $ repeat ' ']
+    sep           = [pack $ take 14 $ repeat ' ']
     bottom        = showSDPair [cD,dD]
-    titlesBottom  = [" F2   F3      "]
-    showSDPair ds = (map (\s -> s ++ "    ") $ CC.concatLines $ map showVisTopCard ds)
+    titlesBottom  = [pack " F2   F3      "]
+    showSDPair ds = (map (\s -> s ++ pack "    ") $ CC.concatLines $ map showVisTopCard ds)
 
-showColumnDecks :: ColumnDecks -> [String]
+showColumnDecks :: ColumnDecks -> [Text]
 showColumnDecks (cD0,cD1,cD2,cD3,cD4,cD5,cD6) = shownColDs''
   where
-    titles       = concat $ map (\i -> " C" ++ (show i) ++ "  ") [(0::Int)..6]
+    titles       = pack $ concat $ map (\i -> " C" ++ (show i) ++ "  ") [(0::Int)..6]
     shownColDs   = map showColumnDeck [cD0,cD1,cD2,cD3,cD4,cD5,cD6]
     shownColDs'' = [titles] ++ (CC.columnLayout $ map (\c -> (colDeckWitdth, c)) shownColDs)
 
 -----------------------------------------------------------------------------------------------
 
-showVisLoop :: Deck -> [String]
+showVisLoop :: Deck -> [Text]
 showVisLoop vLD = CC.concatLines [thirdCard, secndCard, firstCard, margin]
   where
     nCards    = length vLD
@@ -63,7 +64,7 @@ showVisLoop vLD = CC.concatLines [thirdCard, secndCard, firstCard, margin]
     margin    = take (length showCardRows) $ repeat (take marginCnt $ repeat ' ')
 
 
-showColumnDeck :: ColumnDeck -> [String]
+showColumnDeck :: ColumnDeck -> [Text]
 showColumnDeck (hidDeck, visDeck) = shownDeck'
   where shownDeck  = hidCards ++ visCards
         shownDeck' = if null shownDeck then map showEmptyCard showCardRows else shownDeck
@@ -76,14 +77,14 @@ showColumnDeck (hidDeck, visDeck) = shownDeck'
                              in halfCards ++ fullLastCard
 
 
-showBackDeck :: Deck -> [String]
+showBackDeck :: Deck -> [Text]
 showBackDeck deck = map (showBackDeckRow deck) showCardRows
 
-showBackDeckRow :: Deck -> Int -> String
+showBackDeckRow :: Deck -> Int -> Text
 showBackDeckRow deck = if V.null deck then showEmptyCard else showBackCard
 
-showVisTopCard :: Deck -> [String]
+showVisTopCard :: Deck -> [Text]
 showVisTopCard deck = map (showVisDeckRow deck) showCardRows
 
-showVisDeckRow :: Deck -> Int -> String
+showVisDeckRow :: Deck -> Int -> Text
 showVisDeckRow deck = if V.null deck then showEmptyCard else showFullCard $ ((V.!) deck 0)

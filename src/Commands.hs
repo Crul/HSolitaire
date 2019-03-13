@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wall #-}
 module Commands (executeCmd) where
 
+import Data.Text (Text, pack)
 import Data.List (intercalate)
 
 import State   (State(..), previousOrCurrent)
@@ -40,8 +41,8 @@ executeCmd reset play stt act =
       showHelp  = play $ stt { messages=[help] }
 
 
-help :: String
-help = intercalate "\n" [
+help :: Text
+help = pack $ intercalate "\n" [
     "HSolitaire Help"  -- TODO 2 Add recommended fonts (also README)
   , "---------------"
   , ""

@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wall #-}
 module Actions (action, loopToSuitDeck', colToSuitDeck') where
 
+import Data.Text (pack)
 import qualified Data.Vector as V
 
 import qualified Crosscutting as CC
@@ -12,7 +13,7 @@ takeCards :: Int
 takeCards = 3
 
 err :: State -> String -> State
-err = addMessage
+err stt msg = addMessage stt (pack msg)
 
 wrongCol :: Int -> Bool
 wrongCol c = not $ c `elem` [0..6] -- TODO 3 DRY

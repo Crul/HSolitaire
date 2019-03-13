@@ -1,18 +1,19 @@
 {-# OPTIONS_GHC -Wall #-}
 module UxSplash (splashScreen) where
 
+import Data.Text (Text)
 import Data.List (intercalate)
 
 import UxColors (Color(..), formatLines)
 
-cls :: String
-cls = "\ESC[2J"
+cls :: Text
+cls = pack "\ESC[2J"
       
-splashScreen :: String
+splashScreen :: Text
 splashScreen = cls ++ (intercalate "\n" (formatLines  splashScreenTxt  splashScreenFmt))
 
-splashScreenTxt :: [String]
-splashScreenTxt = [  -- TODO 2 colors
+splashScreenTxt :: [Text]
+splashScreenTxt = map pack [  -- TODO 2 colors
     " ╔══════════════════════════════════════╗ "
   , " ║ │   │ ╓── ╓─╖ ║  ▪ ─╥─ ╓─╖ ▪ ╓─╖ ╓── ║ "
   , " ║ ╞═══╡ ╙─╖ ║ ║ ║  ║  ║  ║ ║ ║ ╟─╜ ╟─  ║ "

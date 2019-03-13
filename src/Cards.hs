@@ -8,7 +8,8 @@ module Cards ( Card(..)
              , suitColor
              , suitColorCmd) where
 
-import Data.Char (chr)
+import Data.Char   (chr)
+import Data.Text   (Text, pack, unpack)
 import Data.Vector (Vector)
 import qualified Data.Vector as V
 
@@ -17,7 +18,7 @@ data Card  = Card Label Suit
 
 instance Show Card where  -- TODO 2 move to UX
     show (Card lb st) = "\ESC[107"
-                     ++ (suitColorCmd st)
+                     ++ (unpack $ suitColorCmd st)
                      ++ (trim $ " " ++ show lb ++ show st ++ " ")
                      ++ "\ESC[0m"
       where trim = take 3 . reverse . take 4 . reverse
@@ -32,9 +33,11 @@ suitColor Club    = 0
 suitColor Diamond = 1
 
 -- TODO 2 move to UX
-suitColorCmd :: Suit -> String
-suitColorCmd st | suitColor st == 0 = ";30m"
-                | otherwise         = ";31m"
+suitColorCmd :: Suit -> Text
+suitColorCmd st = pack (";" ++ c ++ "m")
+  where c = case suitColor st of
+                 0 -> ";30m"
+                 _ -> ";31m"
 
 instance Show Suit where
     -- show Spade   = "S "

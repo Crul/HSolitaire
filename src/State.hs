@@ -9,6 +9,7 @@ module State ( State(..)
              , setStColumnDecks
              ) where
 
+import Data.Text (Text, pack)
 import qualified Data.Vector as V
 
 import qualified Crosscutting as CC
@@ -17,14 +18,14 @@ import Decks   (Deck, LoopDecks, SuitDecks, ColumnDeck, ColumnDecks, columnDeck,
 data State = State { loopDecks   :: LoopDecks
                    , suitDecks   :: SuitDecks
                    , columnDecks :: ColumnDecks
-                   , messages    :: [String]
+                   , messages    :: [Text]
                    , previous    :: Maybe State
                    , autoSolving :: Bool
 -- TODO 4 time     , startTime   :: ???
 -- TODO 4 time     , pausesSwts  :: [???]
                    }
 
-addMessage :: State -> String -> State
+addMessage :: State -> Text -> State
 addMessage st msg = st { messages = (messages st) ++ [msg]}
 
 setLoop :: State -> Deck -> Deck -> State
@@ -36,7 +37,7 @@ win State { suitDecks = (spD, hrD, clD, diD) } =
 
 previousOrCurrent :: State -> State
 previousOrCurrent stt = CC.maybeOr (previous stt)
-                            {-or-} (addMessage stt "No more undo is possible")
+                            {-or-} (addMessage stt $ pack "No more undo is possible")
 
 stColumnDeck :: State -> Int -> ColumnDeck
 stColumnDeck stt c = columnDeck (columnDecks stt) c
